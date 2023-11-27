@@ -1,77 +1,59 @@
 #include <stdio.h>
 
-float p[] = {1,1,1};
-float w[] = {2, 2, 2};
-float x[] = {};
+#define MAX_ITEMS 3
+
+float profit[MAX_ITEMS] = {1, 1, 1};
+float weight[MAX_ITEMS] = {2, 2, 2};
+float profitToWeight[MAX_ITEMS];
 float Capacity = 20;
 float totalProfit = 0;
 
-int main()
-{
-    int n = sizeof(p) / sizeof(p[0]);
-    int m = sizeof(w) / sizeof(w[0]);
-    int i, j, k, l;
-    float temp, temp1, temp2;
+// Function to perform bubble sort on profitToWeight array
+void bubbleSort() {
+    for (int i = 0; i < MAX_ITEMS - 1; i++) {
+        for (int j = 0; j < MAX_ITEMS - i - 1; j++) {
+            if (profitToWeight[j] < profitToWeight[j + 1]) {
+                // swap
+                float temp = profitToWeight[j];
+                profitToWeight[j] = profitToWeight[j + 1];
+                profitToWeight[j + 1] = temp;
 
-    if (n == m)
-    {
-        for (i = 0; i <= n - 1; i++)
-        {
-            // calculate the profit/weight
-            x[i] = p[i] / w[i];
+                temp = profit[j];
+                profit[j] = profit[j + 1];
+                profit[j + 1] = temp;
 
-            printf("Profit/Weight In No Specific Order is: %f\n", x[i]);
-        }
-
-        // Use Bubble Sort to sort x[i] in decreasing order
-
-        for (j = n - 1; j >= 1; j--)
-        {
-            for (k = 0; k <= j - 1; k++)
-            {
-                if (x[k] < x[k + 1])
-                {
-                    // swap
-                    temp = x[k];
-                    x[k] = x[k + 1];
-                    x[k + 1] = temp;
-
-                    temp1 = p[k];
-                    p[k] = p[k + 1];
-                    p[k + 1] = temp;
-
-                    temp1 = w[k];
-                    w[k] = w[k + 1];
-                    w[k + 1] = temp;
-                }
+                temp = weight[j];
+                weight[j] = weight[j + 1];
+                weight[j + 1] = temp;
             }
         }
-
-        printf("\n\nProfit/Weight In Decreasing Order: ");
-        for (i = 0; i <= n - 1; i++)
-        {
-            printf("%f ", x[i]);
-        }
-
-        // Conditioning
-
-        for (l = 0; l <= n-1 ; l++)
-        {
-            if (Capacity > 0 && w[l] <= Capacity)
-            {
-                Capacity = Capacity - w[l];
-
-                totalProfit = totalProfit + p[l];
-            }
-            else
-            {
-                totalProfit += p[l] * (Capacity / w[l]);
-                break; // Fractional part handled
-            }
-        }
-
-        printf("\nTotal Profit: %f\n", totalProfit);
     }
+}
+
+int main() {
+    // Calculate profit-to-weight ratio for each item
+    for (int i = 0; i < MAX_ITEMS; i++) {
+        profitToWeight[i] = profit[i] / weight[i];
+        printf("Profit/Weight for Item %d: %f\n", i + 1, profitToWeight[i]);
+    }
+
+    // Sort items in decreasing order of profit-to-weight ratio
+    bubbleSort();
+
+    // Fill the knapsack
+    for (int i = 0; i < MAX_ITEMS; i++) {
+        if (Capacity > 0 && weight[i] <= Capacity) {
+            // Take the whole item
+            Capacity -= weight[i];
+            totalProfit += profit[i];
+        } else {
+            // Take a fraction of the item
+            totalProfit += profit[i] * (Capacity / weight[i]);
+            break;
+        }
+    }
+
+    printf("\nTotal Profit: %f\n", totalProfit);
 
     return 0;
 }
