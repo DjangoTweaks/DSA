@@ -1,62 +1,62 @@
 #include <stdio.h>
 
-// Objective: To sort the following array using Merge Sort
+void Merge(int arr[], int low, int mid, int high) {
+    int i, j, k;
+    int B[100];
 
+    i = low;
+    j = mid + 1;
+    k = low;
 
-int merge(int arr[], int low, int mid, int high)
-{
-   int left = low;
-   int right= mid+1;
-
-   while(left<=mid && right<=high)
-   {
-        if(arr[left]<=arr[right])
-        {
-             
+    while (i <= mid && j <= high) {
+        if (arr[i] < arr[j]) {
+            B[k] = arr[i];
+            i++;
+        } else {
+            B[k] = arr[j];
+            j++;
         }
-   }
-
-
-
-
-}
-
-
-
-
-int mergeSort(int arr[], int low, int high)
-{
-    if(low<high)
-    {
-        int mid=(low+high)/2;
-
-        //sort first and second halves
-
-        mergeSort(arr,low,mid);
-        mergeSort(arr,mid+1, high);
-
-        merge(arr, low, mid, high);
-
-
-
+        k++;
     }
 
+    while (i <= mid) {
+        B[k] = arr[i];
+        i++;
+        k++;
+    }
 
+    while (j <= high) {
+        B[k] = arr[j];
+        j++;
+        k++;
+    }
+
+    for (i = low; i <= high; i++) {
+        arr[i] = B[i];
+    }
 }
 
+void MergeSort(int arr[], int low, int high) {
+    int mid;
+    if (low < high) {
+        mid = (low + high) / 2;
+        MergeSort(arr, low, mid);
+        MergeSort(arr, mid + 1, high);
+        Merge(arr, low, mid, high);
+    }
+}
 
+int main() {
+    int arr[] = {9, 4, 4, 8, 7, 5, 6};
+    int arr_size = sizeof(arr) / sizeof(arr[0]);
 
+    MergeSort(arr, 0, arr_size - 1);
 
-
-int main()
-{
-    int arr[]={12,11,13,5,6,7};
-    int n = sizeof(arr)/sizeof(arr[0]);
-
-
-
-
-
+    printf("Sorted array: ");
+    for (int i = 0; i < arr_size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
 
     return 0;
 }
